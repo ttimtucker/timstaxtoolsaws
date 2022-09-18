@@ -1,0 +1,22 @@
+<head>
+    <title>{% block title %}{% endblock %}</title>
+</head>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+<style>
+         body {
+            background-image: url('../../static/1040.transparent.png');
+            background-repeat: no-repeat;
+         }
+      </style>
+
+{% with messages = get_flashed_messages() %}  
+         {% if messages %}  
+               {% for message in messages %}  
+                    <p>{{ message }}</p>  
+               {% endfor %}  
+         {% endif %}  
+{% endwith %}  
+
+{% block main %} 
+{% endblock %}

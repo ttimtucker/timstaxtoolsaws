@@ -1,0 +1,195 @@
+{% extends 'base.html' %}
+
+{% block title %}Wait while we pull data...{% endblock %}
+
+{% block main %}
+
+<br>
+<style>
+    table, th, td {
+      border:1px solid black;
+    }
+</style>
+<style>
+    h1 {
+        padding: 30px;
+        text-align: center;
+        background: #bc1a6b;
+        color: white;
+        font-size: 30px;
+        }
+      a {
+        color: white;    
+        background-color: #636363;    
+        display: inline-block;
+        padding: 2px 10px;
+        border: 2px solid #099983;
+        text-decoration:none;
+        text-align: center;
+        font: 14px Arial, sans-serif;  
+        border-radius:5px;
+        }
+</style>
+<style type ="text/css" >
+    .footer{ 
+        position: fixed;     
+        text-align: left;    
+        bottom: 0px; 
+        width: 100%;
+    }  
+ </style>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <style>
+    .wrapper {
+      width: 500px;
+    }
+    
+    .progress-bar {
+      width: 100%;
+      background-color: #e0e0e0;
+      padding: 3px;
+      border-radius: 3px;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, .2);
+    }
+    
+    .progress-bar-fill {
+      display: block;
+      height: 22px;
+      background-color: #659cef;
+      border-radius: 3px;
+      
+      transition: width 500ms ease-in-out;
+    }
+  </style>
+  <style>
+    input[type=email] {
+        padding: 10px;
+        margin:10px 0;
+        border-radius:0px;
+    }
+    input[type=password] {
+        padding: 10px;
+        margin:10px 0;
+        border-radius:0px;
+    }
+    /*
+    input[type=submit] {
+        padding: 5px;
+        margin:5px 0;
+        border-radius:10px;
+    }
+    */
+    /*label {
+        color: #B4886B;
+        font-weight: bold;
+        display: block;
+        width: 150px;
+        float: right;
+    }*/
+    .btn {
+        cursor: pointer;
+        background-color:darkgray ;
+        height: 30px;
+        font-family: sans-serif;
+        border-radius:5px;
+    }
+
+    input.btn[type="submit"]:hover {
+        border: 1px solid black;
+    }
+  </style>
+  <script>
+    
+    clicked = 0
+    function buttonClicked() {
+        clicked = 1
+    }
+  </script>
+<br>
+<style>
+blink, .blink { 
+	animation: blink 2s step-end infinite; 
+	color: red;
+	font-family: inherit;
+}
+
+@keyframes blink {
+  67% { opacity: 0 }
+}
+</style>
+
+<h2 class="blink">Please wait while we login and extract data....</h2>
+<br>
+<div class="wrapper" id="progress-wrapper" style="display: none;">
+  <p>Percentage complete = <span id=result></span></p>
+  <div class="progress-bar">
+    <span id="pbar" class="progress-bar-fill" style="width: 20%;"></span>
+  </div>
+</div>
+
+<script>
+    let progress = 0;
+    let progresspct='';
+    //let clicked = 0;
+    let clicked = 1;
+    document.getElementById("progress-wrapper").style.display = "none"
+    console.log("about to call check_progress progress=", progress)
+    check_progress()
+    function check_progress() {
+        //var progress = 0
+        //var progresspct=''
+        console.log("in check_progress about to call worker, progress=", progress)
+        worker()
+        function worker() {
+            //var progress
+            //var progresspct=''
+            console.log("check_progress/worker: clicked=", clicked)
+            if (clicked == 0) {
+                setTimeout(worker,1000) // Wait for button to be clicked before looking for progress
+            } else {
+                //location.reload(true);
+                console.log("in worker, progress=", progress)
+                $.get('get_progress', function(data) {
+                  console.log("after get_progress: progress=", progress)
+                    if (progress == 0) {
+                      progress=data.result
+                      if (progress > 0) {
+                        document.getElementById("progress-wrapper").style.display = "inline" // Unhode progress bar
+                      }
+                      console.log("p=0, before setTimeout: progress=", progress) 
+                      setTimeout(worker, 1000)
+                    }
+                    else if (progress > 0 && progress < 100) {
+                      //document.getElementById("progress-wrapper").style.display = "inline" // Unhode progress bar
+		      console.log("0<p<100", progress)
+                      $("#result").text(data.result);
+                      progress=data.result
+                      console.log("p<100, before setTimeout: progress=", progress)
+                      setTimeout(worker, 1000)
+                  } else if (progress == 100) {
+                      // progress is 100.  Go to the display_hub_stats.html page
+                      console.log("p=100, going to display_hub_stats, progress=", progress)
+                      window.location.href = '../display_hub_stats'
+                  } else if (progress == -1) {
+                     // This indicates a login failure
+                     console.log("p=-1, go to hub_authenticate: progress=", progress)
+                     window.location.href = '../hub_authenticate'
+                  }
+                })
+                //progress=15
+                //progresspct='15%'
+                //console.log("progress before error =", progress)
+                progresspct = 'width: ' + progress.toString() + '%'
+                console.log("progresspct = ", progresspct)
+                document.getElementById('pbar').setAttribute('style', progresspct)
+            }
+        }
+    }   
+</script>
+
+ <br>
+ <a href="{{ url_for('home') }}">Home</a>
+<br>
+{% endblock %}
+

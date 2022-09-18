@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+
+{% block title %}URL for "Display Hub data"{% endblock %}
+
+{% block main %}
+
+<br>
+<style>
+    table, th, td {
+      border:1px solid black;
+    }
+</style>
+<style>
+    h1 {
+        padding: 30px;
+        text-align: center;
+        background: #bc1a6b;
+        color: white;
+        font-size: 30px;
+        }
+      a {
+        color: white;    
+        background-color: #636363;    
+        display: inline-block;
+        padding: 2px 10px;
+        border: 2px solid #099983;
+        text-decoration:none;
+        text-align: center;
+        font: 14px Arial, sans-serif;  
+        border-radius:5px;
+        }
+</style>
+<style type ="text/css" >
+    .footer{ 
+        position: fixed;     
+        text-align: left;    
+        bottom: 0px; 
+        width: 100%;
+    }  
+ </style>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <style>
+    .wrapper {
+      width: 500px;
+    }
+    
+    .progress-bar {
+      width: 100%;
+      background-color: #e0e0e0;
+      padding: 3px;
+      border-radius: 3px;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, .2);
+    }
+    
+    .progress-bar-fill {
+      display: block;
+      height: 22px;
+      background-color: #659cef;
+      border-radius: 3px;
+      
+      transition: width 500ms ease-in-out;
+    }
+  </style>
+  <style>
+    input[type=email] {
+        padding: 10px;
+        margin:10px 0;
+        border-radius:0px;
+    }
+    input[type=password] {
+        padding: 10px;
+        margin:10px 0;
+        border-radius:0px;
+    }
+    /*
+    input[type=submit] {
+        padding: 5px;
+        margin:5px 0;
+        border-radius:10px;
+    }
+    */
+    /*label {
+        color: #B4886B;
+        font-weight: bold;
+        display: block;
+        width: 150px;
+        float: right;
+    }*/
+    .btn {
+        cursor: pointer;
+        background-color:darkgray ;
+        height: 30px;
+        font-family: sans-serif;
+        border-radius:5px;
+    }
+
+    input.btn[type="submit"]:hover {
+        border: 1px solid black;
+    }
+  </style>
+
+ <br>
+ <a href="{{ url_for('home') }}">Home</a>
+<br>
+<br>
+<table>
+<tr>
+<th>Site</th>
+{% for k in header %}    
+    <th class="vertical">{{ k }}</th>
+{% endfor %}
+</tr>    
+{% for k1,v1 in sites.items() %} 
+    <tr>
+    <td>{{ k1 }}</td>
+    {% for k2,v2 in v1.items() %} 
+        <td>{{ v2 }}</td>
+    {% endfor %}
+    </tr>
+{% endfor %}
+</table>
+<br>
+<a href="{{ url_for('download_csv') }}">Download a CSV</a>
+<br>
+<br>
+<a href="{{ url_for('home') }}">Home</a>
+
+{% endblock %}
